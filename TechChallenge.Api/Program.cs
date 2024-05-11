@@ -1,6 +1,4 @@
-using TechChallenge.Business.Interfaces;
-using TechChallenge.Business.Services;
-using TechChallenge.Data.Repositories;
+using TechChallenge.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IRegiaoRepository, RegiaoRepository>();
-builder.Services.AddScoped<IRegiaoService, RegiaoService>();
+builder.Services.ConfigureDependencyInjection();
+
 
 var app = builder.Build();
 

@@ -13,7 +13,7 @@ namespace TechChallenge.Data.Repositories
 
         protected BaseRepository(IConfiguration configuration)
         {
-            _db = new NpgsqlConnection(configuration.GetConnectionString("EmployeeDb"));
+            _db = new NpgsqlConnection(configuration.GetConnectionString("TechChallengeDb"));
         }
 
         public async Task<long> Insert(T entity)

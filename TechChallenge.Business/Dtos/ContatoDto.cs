@@ -4,21 +4,27 @@ using TechChallenge.Business.Validators;
 
 namespace TechChallenge.Business.Dtos
 {
-    public class RegiaoDto : DtoBase
+    public class ContatoDto : DtoBase
     {
         public string? Nome { get; set; }
+        public string? Telefone { get; set; }
+        public string? Email { get; set; }
+        public long? DddId { get; set; }
 
         public override ValidationResult Validate()
         {
-            var validator = new RegiaoValidator();
+            var validator = new ContatoValidator();
             return validator.Validate(this);
         }
 
         protected override EntityBase ToEntity()
         {
-            return new Regiao { 
-                nome = Nome ,
-                id = Id 
+            return new Contato
+            {
+                nome = Nome,
+                email = Email,
+                telefone = Telefone,
+                dddId = DddId,
             };
         }
     }
