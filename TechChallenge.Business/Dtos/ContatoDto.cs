@@ -24,7 +24,7 @@ namespace TechChallenge.Business.Dtos
                 nome = Nome,
                 email = Email,
                 telefone = Telefone,
-                dddId = DddId,
+                ddd_Id = DddId,
             };
         }
     }
