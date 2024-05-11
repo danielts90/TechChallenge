@@ -6,10 +6,10 @@ namespace TechChallenge.Business.Entities
     [Table("regiao")]
     public class Regiao : EntityBase
     {
-        public string? Nome { get; set; }
+        public string? nome { get; set; }
         protected override DtoBase ToDto()
         {
-            return new RegiaoDto { Nome = Nome, Id = Id };
+            return new RegiaoDto { Nome = nome, Id = id };
         }
     }
 }
