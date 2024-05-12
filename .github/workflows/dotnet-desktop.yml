@@ -56,6 +56,7 @@ jobs:
     env:
       Solution_Name: TechChallenge.sln
       Test_Project_Path: TechChallenge.Tests\TechChallenge.Tests.csproj
+      Coverage_Report_Path: coverage\coverage.xml
 
     steps:
     - name: Checkout
@@ -75,7 +76,12 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test $env:Test_Project_Path
+      run: dotnet test $env:Test_Project_Path /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$env:Coverage_Report_Path
+
+    # Generate code coverage report
+    - name: Generate code coverage report
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+    - run: reportgenerator "-reports:$env:Coverage_Report_Path" "-targetdir:coverage" "-reporttypes:Html;Cobertura"
 
     # Restore the application
     - name: Restore the application
