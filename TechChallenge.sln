@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Presentation", "1 - Pre
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Business", "2 - Business", "{CBF115B7-7C2A-46B9-9CFD-1AA715A65EC5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Core", "3 - Core", "{7E32819E-C2B3-40D2-80E2-ACE5C979CBD1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Data", "3 - Data", "{7E32819E-C2B3-40D2-80E2-ACE5C979CBD1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallenge.Api", "TechChallenge.Api\TechChallenge.Api.csproj", "{3E2E06F3-5E83-4D2C-BBEB-2DF49C434209}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallenge.Data", "TechC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Tests", "4 - Tests", "{ABB41776-3547-4570-B9E9-265A8B1A70D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechChallenge.Tests", "TechChallenge.Tests\TechChallenge.Tests.csproj", "{81B3E30F-DB38-49BB-8B21-9A92B4157DBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallenge.Tests", "TechChallenge.Tests\TechChallenge.Tests.csproj", "{81B3E30F-DB38-49BB-8B21-9A92B4157DBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
