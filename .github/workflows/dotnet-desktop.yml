@@ -39,26 +39,8 @@ jobs:
     - name: Execute unit tests
       run: dotnet test $env:Test_Project_Path
 
-    # Generate coverage report using Coverlet
-    - name: Generate coverage report
-      uses: coverlet-coverage/coverlet-action@v1.3.0
-      with:
-        test-project: $env:Test_Project_Path
-        output: coverage.cobertura.xml
-        format: cobertura
-
-    # Upload coverage report to Codecov
-    - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@v2.1.0
-      with:
-        token: ${{secrets.CODECOV_TOKEN }}
-        file: coverage.cobertura.xml
-        flags: unittests
-        name: codecov-umbrella
-
-    # Upload coverage report to Coveralls
-    - name: Upload coverage report to Coveralls
-      uses: coverallsapp/github-action@v1.1.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }} 
-        path-to-lcov: coverage.cobertura.xml
+    # Restore the application
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
