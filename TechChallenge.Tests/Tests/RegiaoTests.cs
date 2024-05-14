@@ -1,7 +1,5 @@
-﻿using AutoMoq;
-using FluentValidation;
+﻿using FluentValidation;
 using Moq;
-using System.Collections.Immutable;
 using TechChallenge.Business.Dtos;
 using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
@@ -25,7 +23,7 @@ namespace TechChallenge.Tests.Tests
         public void Regiao_Com_Nome_Vazio_Deve_Retornar_Erro()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetInvalidRegiao();
+            var regiaoDto = _regiaoFixture.CreateInvalidDto();
             string mensagemEsperada = "Região deve ser informada.";
 
             // Act
@@ -40,9 +38,9 @@ namespace TechChallenge.Tests.Tests
         public void Regiao_Com_Nome_Null_Deve_Retornar_Erro()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetRegiaotWithNullProperties();
+            var regiaoDto = _regiaoFixture.CreateNullDto();
             string mensagemEsperada = "Região deve ser informada.";
-
+  
             // Act
             var result = regiaoDto.Validate();
             // Assert
@@ -55,7 +53,7 @@ namespace TechChallenge.Tests.Tests
         public void Regiao_Com_Nome_Valido_Nao_Deve_Retornar_Erro()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
             // Act
             var result = regiaoDto.Validate();
             // Assert
@@ -67,7 +65,7 @@ namespace TechChallenge.Tests.Tests
         public void Regiao_Com_Erro_Nao_Deve_Ser_Inserida()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetInvalidRegiao();
+            var regiaoDto = _regiaoFixture.CreateInvalidDto();
             // Act
             _regiaoFixture.RegiaoService.Insert(regiaoDto);
 
@@ -80,7 +78,7 @@ namespace TechChallenge.Tests.Tests
         public async Task Regiao_Sem_Erro_Deve_Ser_Inserida()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.Insert(It.IsAny<Regiao>()))
@@ -99,10 +97,10 @@ namespace TechChallenge.Tests.Tests
         public async Task Inserir_Regiao_Com_Erro_Deve_Lancar_Excecao_De_Validacao()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetInvalidRegiao();
+            var regiaoDto = _regiaoFixture.CreateInvalidDto();
 
             // Act & Assert
-            await Assert.ThrowsAsync<ValidationException>(() => _regiaoFixture.RegiaoService.Insert(regiaoDto));
+            await Assert.ThrowsAsync<ValidationException>(() => _regiaoFixture.RegiaoService.Update(regiaoDto));
         }
 
         [Fact(DisplayName = "Update Regiao OK")]
@@ -110,14 +108,14 @@ namespace TechChallenge.Tests.Tests
         public async Task Regiao_Sem_Erro_Deve_Ser_Alterada()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.Update(It.IsAny<Regiao>()));
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.GetById(regiaoDto.Id))
-                .Returns(Task.FromResult((Regiao)_regiaoFixture.GetValidRegiaoDto()));
+                .Returns(Task.FromResult((Regiao)_regiaoFixture.CreateValidDto()));
 
 
             // Act
@@ -133,14 +131,14 @@ namespace TechChallenge.Tests.Tests
         public async Task Alterar_Regiao_Com_Entidade_Nao_Encontrada_Deve_Lancar_Excecao()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.Update(It.IsAny<Regiao>()));
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.GetById(regiaoDto.Id))
-                .Returns<int>(id => Task.FromResult<Regiao>(null));
+                .Returns(Task.FromResult<Regiao>(null));
 
 
             // Act & Assert
@@ -152,11 +150,11 @@ namespace TechChallenge.Tests.Tests
         public async Task GetById_Regiao_OK()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                .Setup(repo => repo.GetById(regiaoDto.Id))
-               .Returns(Task.FromResult((Regiao)_regiaoFixture.GetValidRegiaoDto()));
+               .Returns(Task.FromResult((Regiao)_regiaoFixture.CreateValidDto()));
 
 
             // Act
@@ -171,7 +169,7 @@ namespace TechChallenge.Tests.Tests
         public async Task GetById_Regiao_Null()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                .Setup(repo => repo.GetById(regiaoDto.Id))
@@ -191,9 +189,9 @@ namespace TechChallenge.Tests.Tests
             // Arrange
             var regioes = new List<Regiao>
             {
-                (Regiao)_regiaoFixture.GetValidRegiaoDto(),
-                (Regiao)_regiaoFixture.GetValidRegiaoDto(),
-                (Regiao)_regiaoFixture.GetValidRegiaoDto(),
+                (Regiao)_regiaoFixture.CreateValidDto(),
+                (Regiao)_regiaoFixture.CreateValidDto(),
+                (Regiao)_regiaoFixture.CreateValidDto(),
             };
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
@@ -233,14 +231,14 @@ namespace TechChallenge.Tests.Tests
         public async Task Regiao_Sem_Erro_Deve_Ser_Excluida()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.Delete(It.IsAny<Regiao>()));
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.GetById(regiaoDto.Id))
-                .Returns(Task.FromResult((Regiao)_regiaoFixture.GetValidRegiaoDto()));
+                .Returns(Task.FromResult((Regiao)_regiaoFixture.CreateValidDto()));
 
 
             // Act
@@ -256,14 +254,14 @@ namespace TechChallenge.Tests.Tests
         public async Task Excluir_Regiao_Com_Entidade_Nao_Encontrada_Deve_Lancar_Excecao()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.GetValidRegiaoDto();
+            var regiaoDto = _regiaoFixture.CreateValidDto();
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
-                .Setup(repo => repo.Delete(It.IsAny<Regiao>()));
+                .Setup(repo => repo.Delete((Regiao)regiaoDto));
 
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>()
                 .Setup(repo => repo.GetById(regiaoDto.Id))
-                .Returns<int>(id => Task.FromResult<Regiao>(null));
+                .Returns(Task.FromResult<Regiao>(null));
 
 
             // Act & Assert
@@ -271,23 +269,16 @@ namespace TechChallenge.Tests.Tests
         }
     }
 
-    public class RegiaoFixture : IDisposable
+    public class RegiaoFixture : FixtureBase<RegiaoDto>
     {
-        public AutoMoqer Mocker { get; private set; }
         public RegiaoService RegiaoService { get; private set; }
-
         public RegiaoFixture()
         {
-            Mocker = new AutoMoqer();
             RegiaoService = Mocker.Resolve<RegiaoService>();
         }
 
-        public RegiaoDto GetValidRegiaoDto() => new RegiaoDto { Id = 1, Nome = "Nome Regiao" };
-        public RegiaoDto GetInvalidRegiao() => new RegiaoDto { Nome = "" };
-        public RegiaoDto GetRegiaotWithNullProperties() => new RegiaoDto();
-
-        public void Dispose()
-        {
-        }
+        public override RegiaoDto CreateValidDto() => new RegiaoDto { Id = 1, Nome = "Nome Regiao" };
+        public override RegiaoDto CreateInvalidDto() => new RegiaoDto { Nome = "" };
+        public override RegiaoDto CreateNullDto() => new RegiaoDto();
     }
 }

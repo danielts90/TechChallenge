@@ -8,9 +8,8 @@ namespace TechChallenge.Business.Validators
         public DddValidator() 
         {
             RuleFor(o => o.Codigo)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("O código do DDD é obrigatório.")
+                .NotEmpty().WithMessage("O código do DDD é obrigatório.")
+                .NotNull().WithMessage("O código do DDD é obrigatório.")
                 .Length(2).WithMessage("O DDD deve ter dois dígitos.");
         }
     }
