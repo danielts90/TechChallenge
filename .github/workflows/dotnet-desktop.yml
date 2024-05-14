@@ -41,9 +41,9 @@ jobs:
 
     # Generate coverage report using Coverlet
     - name: Generate coverage report
-      uses: coverletapp/coverlet@1.3.0
+      uses: coverlet-coverage/coverlet-action@v1.3.0
       with:
-        target: $env:Test_Project_Path
+        test-project: $env:Test_Project_Path
         output: coverage.cobertura.xml
         format: cobertura
 
