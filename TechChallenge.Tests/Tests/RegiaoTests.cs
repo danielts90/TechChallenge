@@ -9,14 +9,9 @@ namespace TechChallenge.Tests.Tests
 {
     [Trait("Category", "RegiaoService")]
     [Collection("Regiao Collection")]
-    public class RegiaoTests
+    public class RegiaoTests(RegiaoFixture regiaoFixture)
     {
-        private readonly RegiaoFixture _regiaoFixture;
-
-        public RegiaoTests(RegiaoFixture regiaoFixture)
-        {
-            _regiaoFixture = regiaoFixture;
-        }
+        private readonly RegiaoFixture _regiaoFixture = regiaoFixture;
 
         [Fact(DisplayName = "Validar Região Nome Inválido")]
         [Trait("Regiao", "Validador")]
@@ -161,7 +156,7 @@ namespace TechChallenge.Tests.Tests
             var retorno = await _regiaoFixture.RegiaoService.GetById(regiaoDto.Id);
             
             //Assert
-            Assert.True(retorno is  RegiaoDto);
+            Assert.True(retorno is not null);
         }
 
         [Fact(DisplayName = "Regiao GetById Null")]
@@ -202,7 +197,7 @@ namespace TechChallenge.Tests.Tests
             var retorno = await _regiaoFixture.RegiaoService.GetAll();
 
             //Assert
-            Assert.True(retorno is IEnumerable<RegiaoDto>);
+            Assert.True(retorno is not null);
             Assert.True(retorno.Any());
         }
 
@@ -222,7 +217,7 @@ namespace TechChallenge.Tests.Tests
             var retorno = await _regiaoFixture.RegiaoService.GetAll();
 
             //Assert
-            Assert.True(retorno is IEnumerable<RegiaoDto>);
+            Assert.True(retorno is not null);
             Assert.False(retorno.Any());
         }
 
@@ -277,8 +272,8 @@ namespace TechChallenge.Tests.Tests
             RegiaoService = Mocker.Resolve<RegiaoService>();
         }
 
-        public override RegiaoDto CreateValidDto() => new RegiaoDto { Id = 1, Nome = "Nome Regiao" };
-        public override RegiaoDto CreateInvalidDto() => new RegiaoDto { Nome = "" };
-        public override RegiaoDto CreateNewDto() => new RegiaoDto();
+        public override RegiaoDto CreateValidDto() => new() { Id = 1, Nome = "Nome Regiao" };
+        public override RegiaoDto CreateInvalidDto() => new() { Nome = "" };
+        public override RegiaoDto CreateNewDto() => new();
     }
 }

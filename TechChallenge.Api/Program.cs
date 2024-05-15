@@ -1,3 +1,5 @@
+using Npgsql;
+using System.Data;
 using TechChallenge.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureDependencyInjection();
+builder.Services.AddScoped<IDbConnection>((sp) =>
+    new NpgsqlConnection(builder.Configuration.GetConnectionString("TechChallengeDb")));
+
 
 
 var app = builder.Build();
@@ -28,3 +33,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

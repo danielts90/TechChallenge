@@ -17,5 +17,9 @@
 	  <ProjectReference Include="..\TechChallenge.Data\TechChallenge.Data.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="..\TechChallenge.Tests.Integration\TechChallenge.Tests.Integration.csproj" />
+	</ItemGroup>
+
 
 </Project>

@@ -11,9 +11,9 @@ namespace TechChallenge.Data.Repositories
     {
         protected readonly IDbConnection _db;
 
-        protected BaseRepository(IConfiguration configuration)
+        protected BaseRepository(IDbConnection connection)
         {
-            _db = new NpgsqlConnection(configuration.GetConnectionString("TechChallengeDb"));
+            _db = connection;
         }
 
         public async Task<long> Insert(T entity)

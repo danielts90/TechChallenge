@@ -9,14 +9,9 @@ namespace TechChallenge.Tests.Tests
 {
     [Trait("Category", "DddService")]
     [Collection("Ddd Collection")]
-    public class DddTests
+    public class DddTests(DddFixture dddFixture)
     {
-        private readonly DddFixture _dddFixture;
-
-        public DddTests(DddFixture dddFixture)
-        {
-            _dddFixture = dddFixture;
-        }
+        private readonly DddFixture _dddFixture = dddFixture;
 
         [Fact(DisplayName = "Validar Construtor")]
         [Trait("DDD", "Construtor")]
@@ -76,7 +71,7 @@ namespace TechChallenge.Tests.Tests
             var result = ddd.Validate();
             //Assert
             Assert.False(result.IsValid);
-            Assert.Equal(qtdErros, result.Errors.Count());
+            Assert.Equal(qtdErros, result.Errors.Count);
         }
 
         [Fact(DisplayName = "Validadar DDD Null")]
@@ -101,9 +96,9 @@ namespace TechChallenge.Tests.Tests
         {
             DddService = Mocker.Resolve<DddService>();
         }
-        public override DddDto CreateInvalidDto() => new DddDto { Codigo = "", RegiaoId = null };
-        public override DddDto CreateNewDto() => new DddDto();
-        public override DddDto CreateValidDto() => new DddDto { Codigo = "41", RegiaoId = 1, Id = 1 };
+        public override DddDto CreateInvalidDto() => new() { Codigo = "", RegiaoId = null };
+        public override DddDto CreateNewDto() => new();
+        public override DddDto CreateValidDto() => new() { Codigo = "41", RegiaoId = 1, Id = 1 };
     }
  }
 
