@@ -38,7 +38,7 @@ namespace TechChallenge.Tests.Tests
         public void Regiao_Com_Nome_Null_Deve_Retornar_Erro()
         {
             // Arrange
-            var regiaoDto = _regiaoFixture.CreateNullDto();
+            var regiaoDto = _regiaoFixture.CreateNewDto();
             string mensagemEsperada = "Região deve ser informada.";
   
             // Act
@@ -279,6 +279,6 @@ namespace TechChallenge.Tests.Tests
 
         public override RegiaoDto CreateValidDto() => new RegiaoDto { Id = 1, Nome = "Nome Regiao" };
         public override RegiaoDto CreateInvalidDto() => new RegiaoDto { Nome = "" };
-        public override RegiaoDto CreateNullDto() => new RegiaoDto();
+        public override RegiaoDto CreateNewDto() => new RegiaoDto();
     }
 }

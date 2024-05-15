@@ -14,7 +14,7 @@ namespace TechChallenge.Tests.Tests
 
         public abstract TDto CreateValidDto();
         public abstract TDto CreateInvalidDto();
-        public abstract TDto CreateNullDto();
+        public abstract TDto CreateNewDto();
     }
 
 }
