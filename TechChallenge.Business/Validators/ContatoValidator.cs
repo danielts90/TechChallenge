@@ -9,8 +9,7 @@ namespace TechChallenge.Business.Validators
         public ContatoValidator() 
         {
             RuleFor(o => o.Nome)
-                .NotEmpty()
-                .NotNull()
+                .NotNullOrEmpty()
                 .WithMessage("Obrigatório informar o nome do contato.");
 
             RuleFor(o => o.Telefone)

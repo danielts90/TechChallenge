@@ -8,8 +8,8 @@ namespace TechChallenge.Business.Validators
         public RegiaoValidator()
         {
             RuleFor(o => o.Nome)
-                .NotNull().WithMessage("Região deve ser informada.")
-                .NotEmpty().WithMessage("Região deve ser informada.");
+                .NotNullOrEmpty()
+                .WithMessage("Região deve ser informada.");
         }
     }
 }
