@@ -5,10 +5,11 @@ using TechChallenge.Business.Interfaces;
 
 namespace TechChallenge.Data.Repositories
 {
-    public class RegiaoRepository : BaseRepository<Regiao>, IRegiaoRepository
+    public class ContatoRepository : BaseRepository<Contato>, IContatoRepository
     {
-        public RegiaoRepository(IDbConnection connection) : base(connection)
+        public ContatoRepository(IDbConnection connection) : base(connection)
         {
         }
     }
+
 }

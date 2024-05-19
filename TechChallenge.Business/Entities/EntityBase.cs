@@ -6,7 +6,7 @@ namespace TechChallenge.Business.Entities
     public abstract class EntityBase
     {
         [Key]
-        public long Id { get; set; }
+        public long id { get; set; }
         [Write(false)]
         public DateTime created_at { get; set; }
 

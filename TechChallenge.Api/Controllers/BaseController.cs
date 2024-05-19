@@ -25,11 +25,20 @@ namespace TechChallenge.Api.Controllers
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> GetAll()
         {
-            var itens = await _service.GetAll();
-            if (itens.Any())
-                return Ok(new CustomResponse<IEnumerable<TDto>>(true, "", itens));
-            else
-                return NotFound(new CustomResponse<IEnumerable<TDto>>(false, "No registers founded.", itens));
+            try
+            {
+                var itens = await _service.GetAll();
+                if (itens.Any())
+                    return Ok(new CustomResponse<IEnumerable<TDto>>(true, "", itens));
+                else
+                    return NotFound(new CustomResponse<IEnumerable<TDto>>(false, "No registers founded.", itens));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpGet("{id}")]

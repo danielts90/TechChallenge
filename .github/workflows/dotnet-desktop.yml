@@ -1,0 +1,78 @@
+name: .NET Core Build and Test
+
+on:
+  push:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+
+    strategy:
+      matrix:
+        configuration: [Debug]
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: TechChallenge.sln
+      Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
+      Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore the application
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build the application
+      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
+
+    - name: Execute unit tests
+      run: dotnet test ${{ env.Unit_Test_Project_Path }}
+
+    - name: Set up Docker Compose
+      run: |
+        echo "version: '3.8'
+
+        services:
+          db:
+            image: postgres:latest
+            environment:
+              POSTGRES_USER: testuser
+              POSTGRES_PASSWORD: 102030
+              POSTGRES_DB: testdb
+            ports:
+              - '5432:5432'" > docker-compose.yml
+
+    - name: Start database
+      run: docker-compose up -d
+
+    - name: Wait for Postgres
+      run: |
+        echo "Waiting for Postgres to be ready..."
+        for i in {1..30}; do
+          if docker exec $(docker-compose ps -q db) pg_isready -U testuser -d testdb; then
+            echo "Postgres is ready!"
+            exit 0
+          fi
+          echo "Waiting..."
+          sleep 2
+        done
+        echo "Postgres did not become ready in time!"
+        exit 1
+
+    - name: Execute integration tests
+      run: dotnet test ${{ env.Integration_Test_Project_Path }}
+
+    - name: Clean up
+      if: always()
+      run: docker-compose down

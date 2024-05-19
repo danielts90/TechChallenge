@@ -1,6 +1,6 @@
-using TechChallenge.Business.Interfaces;
-using TechChallenge.Business.Services;
-using TechChallenge.Data.Repositories;
+using Npgsql;
+using System.Data;
+using TechChallenge.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IRegiaoRepository, RegiaoRepository>();
-builder.Services.AddScoped<IRegiaoService, RegiaoService>();
+builder.Services.ConfigureDependencyInjection();
+builder.Services.AddScoped<IDbConnection>((sp) =>
+    new NpgsqlConnection(builder.Configuration.GetConnectionString("TechChallengeDb")));
+
+
 
 var app = builder.Build();
 
@@ -30,3 +33,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
