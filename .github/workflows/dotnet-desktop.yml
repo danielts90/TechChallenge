@@ -77,6 +77,11 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
+    # Clean up the database before each test run
+    - name: Clean up database
+      run: |
+        docker exec $(docker-compose ps -q db) psql -U testuser -d testdb -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
     # Execute integration tests
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
