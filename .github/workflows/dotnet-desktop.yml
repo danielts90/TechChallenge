@@ -12,11 +12,11 @@ jobs:
       matrix:
         configuration: [Debug]
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       Solution_Name: TechChallenge.sln
-      Test_Project_Path: TechChallenge.Tests\TechChallenge.Tests.csproj
+      Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
 
     steps:
     - name: Checkout
@@ -29,10 +29,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-
-    # Setup MSBuild.exe
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
 
     # Set up Docker Compose
     - name: Set up Docker Compose
@@ -68,15 +64,17 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
+    # Execute all unit tests and integration tests in the solution
+    - name: Execute tests
       run: dotnet test $env:Test_Project_Path
 
     # Restore the application
     - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      run: dotnet restore $env:Solution_Name
+
+    # Build the application
+    - name: Build the application
+      run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }}
 
     # Clean up Docker containers
     - name: Clean up
