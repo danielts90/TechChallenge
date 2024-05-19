@@ -1,11 +1,9 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using System.Data;
-using System.Data.Common;
 
 namespace TechChallenge.Tests.Integration
 {
