@@ -9,14 +9,13 @@ namespace TechChallenge.Tests.Integration
 {
     public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
     {
-
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.ConfigureServices(services =>
+            builder.ConfigureServices(async services =>
             {
-                services.AddScoped<IDbConnection>(sp => new NpgsqlConnection("Host=localhost;Port=5432;Username=testuser;Password=102030;Database=testdb"));
-                SetupDatabase(services).Wait();
-
+                services.AddScoped<IDbConnection>(sp =>
+                    new NpgsqlConnection("Host=localhost;Port=5432;Username=testuser;Password=102030;Database=testdb;Include Error Detail=true"));
+                await SetupDatabase(services);
             });
 
             return base.CreateHost(builder);
@@ -27,14 +26,14 @@ namespace TechChallenge.Tests.Integration
             var serviceProvider = services.BuildServiceProvider();
 
             using var db = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IDbConnection>();
-            ExecuteSqlScript(db, "Setup/setup.sql");
-
+            await ExecuteSqlScriptAsync(db, "Setup/setup.sql");
         }
 
-        protected static void ExecuteSqlScript(IDbConnection? connection, string scriptPath)
+        protected static async Task ExecuteSqlScriptAsync(IDbConnection? connection, string scriptPath)
         {
             var script = File.ReadAllText(scriptPath);
-            connection.Execute(script);
+            await connection.ExecuteAsync(script);
         }
     }
+
 }
