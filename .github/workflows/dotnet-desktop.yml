@@ -1,4 +1,4 @@
-name: .NET Core Desktop
+name: .NET Core Build and Test
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-test:
 
     strategy:
       matrix:
@@ -16,7 +16,8 @@ jobs:
 
     env:
       Solution_Name: TechChallenge.sln
-      Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
+      Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
+      Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
 
     steps:
     - name: Checkout
@@ -29,6 +30,18 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    # Restore the application
+    - name: Restore the application
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    # Build the application
+    - name: Build the application
+      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
+
+    # Execute unit tests
+    - name: Execute unit tests
+      run: dotnet test ${{ env.Unit_Test_Project_Path }}
 
     # Set up Docker Compose
     - name: Set up Docker Compose
@@ -64,17 +77,9 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
-    # Execute all unit tests and integration tests in the solution
-    - name: Execute tests
-      run: dotnet test $env:Test_Project_Path
-
-    # Restore the application
-    - name: Restore the application
-      run: dotnet restore $env:Solution_Name
-
-    # Build the application
-    - name: Build the application
-      run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }}
+    # Execute integration tests
+    - name: Execute integration tests
+      run: dotnet test ${{ env.Integration_Test_Project_Path }}
 
     # Clean up Docker containers
     - name: Clean up
