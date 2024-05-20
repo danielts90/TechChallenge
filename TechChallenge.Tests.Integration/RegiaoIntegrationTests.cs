@@ -63,8 +63,6 @@ namespace TechChallenge.Tests.Integration
         {
             //Arrange
             RegiaoDto regiao = new() { Id = 4, Nome = "Regiao de Testes" };
-            var json = JsonSerializer.Serialize(regiao);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 
             //Act
