@@ -72,7 +72,7 @@ jobs:
         exit 1
         
     - name: Run SQL script
-      run: psql -U testuser -d testdb -f ${{ DatabaseInitialize_Path }}
+      run: psql -U testuser -d testdb -f ${{ env.DatabaseInitialize_Path }}
 
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
