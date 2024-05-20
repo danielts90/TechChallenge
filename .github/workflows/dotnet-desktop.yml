@@ -71,12 +71,6 @@ jobs:
         exit 1
 
 
-    - name: Apply database setup
-      env:
-        PGPASSWORD: 102030
-      run: |
-        psql -h localhost -p 5432 -U testuser -d testdb -f Setup/setup.sql
-
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
 
