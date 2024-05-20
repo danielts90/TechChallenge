@@ -9,7 +9,7 @@ namespace TechChallenge.Business.Entities
         public string? nome { get; set; }
         public string? telefone { get; set; }
         public string? email { get; set; }
-        public long? ddd_Id { get; set; }
+        public long? ddd_id { get; set; }
         protected override ContatoDto ToDto()
         {
             return new ContatoDto
@@ -18,7 +18,7 @@ namespace TechChallenge.Business.Entities
                 Nome = nome,
                 Telefone = telefone,
                 Email = email,
-                DddId = ddd_Id,
+                DddId = ddd_id,
             };
         }
     }
