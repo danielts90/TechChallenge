@@ -8,11 +8,13 @@ namespace TechChallenge.Tests.Integration
         {
         }
 
-        [Fact(DisplayName = "Contato GetAll")]
-        [Trait("Contato Integration", "GetAll")]
-        public async Task GetValues_ReturnsSuccessStatusCode()
+        [Theory(DisplayName = "Check Contato Get Endpoints")]
+        [Trait("Contato Integration", "Check Get Endpoints")]
+        [InlineData("/contato")]
+        [InlineData("/contato/1")]
+        public async Task GetValues_ReturnsSuccessStatusCode(string endpoint)
         {
-            var response = await _client.GetAsync("/Contato");
+            var response = await _client.GetAsync(endpoint);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }

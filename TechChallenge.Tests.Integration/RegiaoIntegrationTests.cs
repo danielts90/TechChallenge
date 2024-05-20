@@ -11,11 +11,14 @@ namespace TechChallenge.Tests.Integration
         {
         }
 
-        [Fact(DisplayName = "Regiao GetAll")]
-        [Trait("Regiao Integration", "GetAll")]
-        public async Task GetValues_ReturnsSuccessStatusCode()
+        [Theory(DisplayName = "Check Regiao Get Endpoints")]
+        [Trait("Regiao Integration", "Check Get Endpoints")]
+        [InlineData("/regiao")]
+        [InlineData("/regiao/1")]
+        [InlineData("/regiao/regiao-com-ddds/1")]
+        public async Task GetValues_ReturnsSuccessStatusCode(string endpoint)
         {
-            var response = await _client.GetAsync("/Regiao");
+            var response = await _client.GetAsync(endpoint);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
