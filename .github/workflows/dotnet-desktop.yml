@@ -70,6 +70,18 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
+    - name: Apply database reset
+      env:
+        PGPASSWORD: 102030
+      run: |
+        psql -h localhost -U testuser -d testdb -f Setup/setup.sql
+
+    - name: Apply database setup
+      env:
+        PGPASSWORD: 102030
+      run: |
+        psql -h localhost -U testuser -d testdb -f Setup/setup.sql
+
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
 
