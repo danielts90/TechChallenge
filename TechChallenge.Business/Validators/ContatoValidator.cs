@@ -13,14 +13,12 @@ namespace TechChallenge.Business.Validators
                 .WithMessage("Obrigatório informar o nome do contato.");
 
             RuleFor(o => o.Telefone)
-                .NotEmpty()
-                .NotNull()
+                .NotNullOrEmpty()
                 .WithMessage("O campo telefone é obrigatório")
                 .Must(BePhoneNumber).WithMessage("O telefone inválido, o número do telefone deve ter 8 ou 9 dígitos.");
 
             RuleFor(o => o.Email)
-                .NotNull()
-                .NotEmpty()
+                .NotNullOrEmpty()
                 .WithMessage("O campo e-mail é obrigatório.")
                 .EmailAddress(mode: FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible)
                 .WithMessage("E-mail inválido.");
