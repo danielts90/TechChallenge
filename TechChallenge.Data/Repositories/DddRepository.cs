@@ -24,7 +24,7 @@ namespace TechChallenge.Data.Repositories
                left join contato c on d.id = c.ddd_id
                where d.id = @dddId";
 
-        public async Task<DddComContatosDto> GetDddComContatos(long dddId)
+        public async Task<DddComContatosDto> ObterDddComContatos(long dddId)
         {
             var dddLookup = new Dictionary<long, DddComContatosDto>();
 

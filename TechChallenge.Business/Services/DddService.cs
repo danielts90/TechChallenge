@@ -15,7 +15,7 @@ namespace TechChallenge.Business.Services
 
         public async Task<DddComContatosDto> ObterDddsComContato(long dddId)
         {
-            var dddComContatos = await _dddRepository.GetDddComContatos(dddId);
+            var dddComContatos = await _dddRepository.ObterDddComContatos(dddId);
             return dddComContatos;
         }
     }

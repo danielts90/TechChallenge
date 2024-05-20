@@ -5,6 +5,6 @@ namespace TechChallenge.Business.Interfaces
 {
     public interface IDddRepository : IBaseRepository<Ddd> 
     {
-        Task<DddComContatosDto> GetDddComContatos(long dddId);
+        Task<DddComContatosDto> ObterDddComContatos(long dddId);
     }
 }
