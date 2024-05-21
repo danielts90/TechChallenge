@@ -27,7 +27,7 @@ namespace TechChallenge.Data.Repositories
         {
             var regiaoLookup = new Dictionary<long, RegiaoComDddDto>();
 
-            var regiaoddd = await _db.QueryAsync<RegiaoDto, DddDto, RegiaoComDddDto>(OBTER_REGIAO_COM_DDDs,
+            await _db.QueryAsync<RegiaoDto, DddDto, RegiaoComDddDto>(OBTER_REGIAO_COM_DDDs,
                 (regiao, ddd) =>
                 {
                    if(!regiaoLookup.TryGetValue(regiao.Id, out var regiaolkp))
