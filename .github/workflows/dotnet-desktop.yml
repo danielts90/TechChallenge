@@ -39,12 +39,6 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Restore the application
-      run: dotnet restore ${{ env.Solution_Name }}
-
-    - name: Build the application
-      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
-
     - name: Set up Docker Compose
       run: |
         echo "version: '3.8'
@@ -88,7 +82,12 @@ jobs:
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l trx
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-      
+    
+    - name: Restore the application
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build the application
+      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} 
 
     - name: Clean up
       if: always()
