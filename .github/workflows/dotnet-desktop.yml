@@ -74,6 +74,14 @@ jobs:
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
 
+    - name: SonarCloud Scan
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        dotnet-sonarscanner begin /k:"<organization>danielts90_TechChallenge<project-key>" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        dotnet build
+        dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
     - name: Clean up
       if: always()
       run: docker-compose down
