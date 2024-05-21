@@ -85,7 +85,7 @@ jobs:
         dotnet tool install --global dotnet-sonarscanner
         dotnet tool install --global JetBrains.dotCover.GlobalTool
         export PATH="$PATH:$HOME/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
         dotnet build --no-incremental
         dotnet dotcover test --dcReportType=HTML
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
