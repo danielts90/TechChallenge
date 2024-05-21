@@ -83,7 +83,7 @@ jobs:
         dotnet test ${{ env.Integration_Test_Project_Path }} --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
 
     - name: Install ReportGenerator
-      run: dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.10.6
+      run: dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 5.3.0
 
     - name: Convert coverage report to Cobertura XML
       run: |
