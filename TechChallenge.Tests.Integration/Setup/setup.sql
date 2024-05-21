@@ -1,12 +1,5 @@
 
 
-set enable_parallel_hash=off;
-
-
-DROP TABLE IF EXISTS contato;
-DROP TABLE IF EXISTS ddd;
-DROP TABLE IF EXISTS regiao;
-
 -- Create tables
 CREATE TABLE IF NOT EXISTS regiao (
     id SERIAL PRIMARY KEY,
@@ -45,10 +38,6 @@ INSERT INTO ddd (codigo, regiao_id, created_at) VALUES ('44', 1, CURRENT_DATE) O
 
 INSERT INTO contato (nome, email, telefone, ddd_id, created_at) VALUES ('Eddie Vedder', 'eddie.vedder@pearljam.com', '123456789', 1, CURRENT_DATE) ON CONFLICT DO NOTHING;
 INSERT INTO contato (nome, email, telefone, ddd_id, created_at) VALUES ('Eloy Casagrande', 'eloy.bighouse@slipknot.com', '123456789', 2, CURRENT_DATE) ON CONFLICT DO NOTHING;
-
-
-
-set enable_parallel_hash=on;
 
 
 

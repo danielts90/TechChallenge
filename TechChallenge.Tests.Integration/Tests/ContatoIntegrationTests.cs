@@ -1,11 +1,15 @@
 ﻿using System.Net;
+using TechChallenge.Tests.Integration.Fixtures;
 
-namespace TechChallenge.Tests.Integration
+namespace TechChallenge.Tests.Integration.Tests
 {
+    [Collection("Database collection")]
     public class ContatoIntegrationTests : IntegrationTestBase
     {
-        public ContatoIntegrationTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+        private readonly DatabaseFixture _databaseFixture;
+        public ContatoIntegrationTests(CustomWebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : base(factory)
         {
+            _databaseFixture = databaseFixture;
         }
 
         [Theory(DisplayName = "Check Contato Get Endpoints")]

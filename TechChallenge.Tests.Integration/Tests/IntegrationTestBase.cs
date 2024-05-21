@@ -1,8 +1,9 @@
 ﻿using System.Data;
 using System.Net.Http;
 using System.Text.Json;
+using TechChallenge.Tests.Integration.Fixtures;
 
-namespace TechChallenge.Tests.Integration
+namespace TechChallenge.Tests.Integration.Tests
 {
     public abstract class IntegrationTestBase : IClassFixture<CustomWebApplicationFactory<Program>>, IDisposable
     {

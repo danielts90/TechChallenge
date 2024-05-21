@@ -1,11 +1,16 @@
 ﻿using System.Net;
+using TechChallenge.Tests.Integration.Fixtures;
 
-namespace TechChallenge.Tests.Integration
+namespace TechChallenge.Tests.Integration.Tests
 {
+    [Collection("Database collection")]
+
     public class DddIntegrationTests : IntegrationTestBase
     {
-        public DddIntegrationTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+        private readonly DatabaseFixture _databaseFixture;
+        public DddIntegrationTests(CustomWebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : base(factory)
         {
+            _databaseFixture = databaseFixture;
         }
 
         [Theory(DisplayName = "Check DDD Get Endpoints")]

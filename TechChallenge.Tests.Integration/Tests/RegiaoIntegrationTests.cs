@@ -2,13 +2,18 @@
 using System.Text;
 using System.Text.Json;
 using TechChallenge.Business.Dtos;
+using TechChallenge.Tests.Integration.Fixtures;
 
-namespace TechChallenge.Tests.Integration
+namespace TechChallenge.Tests.Integration.Tests
 {
+    [Collection("Database collection")]
+
     public class RegiaoIntegrationTests : IntegrationTestBase
     {
-        public RegiaoIntegrationTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+        private readonly DatabaseFixture databaseFixture;
+        public RegiaoIntegrationTests(CustomWebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : base(factory)
         {
+            this.databaseFixture = databaseFixture;
         }
 
         [Theory(DisplayName = "Check Regiao Get Endpoints")]
