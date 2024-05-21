@@ -18,6 +18,7 @@ jobs:
       Solution_Name: TechChallenge.sln
       Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
       Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
+      Coverlet_Report_Path: coverage/coverage.info
 
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
