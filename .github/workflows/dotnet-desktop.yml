@@ -18,8 +18,7 @@ jobs:
       Solution_Name: TechChallenge.sln
       Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
       Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
-      Coverlet_Report_Path: coverage/coverage.info
-
+      
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
       POSTGRES_DB: testdb
@@ -96,12 +95,6 @@ jobs:
             -f opencover \
             -o "coverage.integration.opencover.xml"
 
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-    - name: Merge coverage reports
-      run: |
-        reportgenerator -reports:coverage.unit.opencover.xml,coverage.integration.opencover.xml -targetdir:coverage -reporttypes:opencover
 
     - name: SonarCloud Scan
       env:
@@ -109,8 +102,7 @@ jobs:
       run: |
         dotnet tool install --global dotnet-sonarscanner
         export PATH="$PATH:/home/runner/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml"
-        dotnet build
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" 
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
     - name: Clean up
