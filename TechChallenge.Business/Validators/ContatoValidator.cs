@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using System.Text.RegularExpressions;
 using TechChallenge.Business.Dtos;
+using TechChallenge.Business.Util;
 
 namespace TechChallenge.Business.Validators
 {
@@ -29,7 +29,7 @@ namespace TechChallenge.Business.Validators
 
         private bool BePhoneNumber(string telefone)
         {
-            var regex = new Regex(@"^\d{8,9}$");
+            var regex = RegexHelper.DigitsRegex();
             return regex.IsMatch(telefone);
         }
     }

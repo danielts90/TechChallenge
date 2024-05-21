@@ -170,11 +170,10 @@ namespace TechChallenge.Tests.Tests
                .Setup(repo => repo.GetById(regiaoDto.Id))
                .Returns(Task.FromResult((Regiao)null));
 
-            // Act
-            var retorno = await _regiaoFixture.RegiaoService.GetById(regiaoDto.Id);
 
-            //Assert
-            Assert.Null(retorno);
+            //Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _regiaoFixture.RegiaoService.GetById(regiaoDto.Id));
+
         }
 
         [Fact(DisplayName = "Regiao GetAll Ok")]

@@ -35,7 +35,8 @@ namespace TechChallenge.Business.Services
             var result = await _repository.GetById(id);
             if (result is TEntity)
                 return (TDto)result;
-            return null;
+            throw new ArgumentException("Entidade não encontrada.");
+
         }
 
         public async Task<long> Insert(TDto dto)

@@ -9,7 +9,7 @@ namespace TechChallenge.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public abstract class BaseController<TDto, TEntity> : Controller
+    public abstract class BaseController<TDto, TEntity> : ControllerBase
        where TDto : DtoBase
        where TEntity : EntityBase
     {
@@ -48,12 +48,12 @@ namespace TechChallenge.Api.Controllers
         {
             var item = await _service.GetById(id);
 
-            if (item == null)
+            if (item is not TDto)
             {
-                return NotFound(new CustomResponse<TDto>(false, $"No registers founded for id {id}", item));
+                return NotFound(new CustomResponse<TDto?>(false, $"No registers founded for id {id}", item));
             }
 
-            return Ok(new CustomResponse<TDto>(true, "", item));
+            return Ok(new CustomResponse<TDto?>(true, "", item));
         }
 
         [HttpPost]
@@ -65,11 +65,11 @@ namespace TechChallenge.Api.Controllers
             {
                 var itemInserted = await _service.Insert(dto);
                 dto = await _service.GetById(itemInserted);
-                return Ok(new CustomResponse<TDto>(true, $"Item inserted with id {itemInserted}", dto));
+                return Ok(new CustomResponse<TDto?>(true, $"Item inserted with id {itemInserted}", dto));
             }
             catch (Exception ex)
             {
-                return BadRequest(new CustomResponse<TDto>(false, $"An error ocurred while execute Post action,{ex.Message}", dto));
+                return BadRequest(new CustomResponse<TDto?>(false, $"An error ocurred while execute Post action,{ex.Message}", dto));
             }
         }
 
@@ -81,17 +81,17 @@ namespace TechChallenge.Api.Controllers
         {
             if (id != dto.Id)
             {
-                return BadRequest(new CustomResponse<TDto>(false, $"Invalid object Id: {id}", dto));
+                return BadRequest(new CustomResponse<TDto?>(false, $"Invalid object Id: {id}", dto));
             }
 
             try
             {
                 await _service.Update(dto);
-                return Ok(new CustomResponse<TDto>(true, "Object updated", dto));
+                return Ok(new CustomResponse<TDto?>(true, "Object updated", dto));
             }
             catch (Exception ex)
             {
-                return BadRequest(new CustomResponse<TDto>(false, $"An error ocurred while execute Put action, {ex.Message}", dto));
+                return BadRequest(new CustomResponse<TDto?>(false, $"An error ocurred while execute Put action, {ex.Message}", dto));
             }
         }
 
@@ -103,19 +103,19 @@ namespace TechChallenge.Api.Controllers
         {
             var existentItem = await _service.GetById(id);
 
-            if (existentItem == null)
+            if (existentItem is not TDto)
             {
-                return NotFound(new CustomResponse<IEnumerable<TDto>>(false, $"No registers founded to id {id}", null));
+                return NotFound(new CustomResponse<TDto?>(false, $"No registers founded to id {id}", null));
             }
 
             try
             {
                 await _service.Delete(id);
-                return Ok(new CustomResponse<TDto>(true, "Object deleted", existentItem));
+                return Ok(new CustomResponse<TDto?>(true, "Object deleted", existentItem));
             }
             catch (Exception ex)
             {
-                return BadRequest(new CustomResponse<TDto>(false, $"An error ocurred while execute delete action, {ex.Message}", existentItem));
+                return BadRequest(new CustomResponse<TDto?>(false, $"An error ocurred while execute delete action, {ex.Message}", existentItem));
             }
 
         }
