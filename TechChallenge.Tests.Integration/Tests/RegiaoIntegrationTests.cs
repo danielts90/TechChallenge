@@ -2,20 +2,28 @@
 using System.Text;
 using System.Text.Json;
 using TechChallenge.Business.Dtos;
+using TechChallenge.Tests.Integration.Fixtures;
 
-namespace TechChallenge.Tests.Integration
+namespace TechChallenge.Tests.Integration.Tests
 {
+    [Collection("Database collection")]
+
     public class RegiaoIntegrationTests : IntegrationTestBase
     {
-        public RegiaoIntegrationTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+        private readonly DatabaseFixture databaseFixture;
+        public RegiaoIntegrationTests(CustomWebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : base(factory)
         {
+            this.databaseFixture = databaseFixture;
         }
 
-        [Fact(DisplayName = "Regiao GetAll")]
-        [Trait("Regiao Integration", "GetAll")]
-        public async Task GetValues_ReturnsSuccessStatusCode()
+        [Theory(DisplayName = "Check Regiao Get Endpoints")]
+        [Trait("Regiao Integration", "Check Get Endpoints")]
+        [InlineData("/regiao")]
+        [InlineData("/regiao/1")]
+        [InlineData("/regiao/regiao-com-ddds/1")]
+        public async Task GetValues_ReturnsSuccessStatusCode(string endpoint)
         {
-            var response = await _client.GetAsync("/Regiao");
+            var response = await _client.GetAsync(endpoint);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -60,8 +68,6 @@ namespace TechChallenge.Tests.Integration
         {
             //Arrange
             RegiaoDto regiao = new() { Id = 4, Nome = "Regiao de Testes" };
-            var json = JsonSerializer.Serialize(regiao);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 
             //Act

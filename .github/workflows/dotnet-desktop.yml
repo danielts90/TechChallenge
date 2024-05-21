@@ -69,6 +69,7 @@ jobs:
         done
         echo "Postgres did not become ready in time!"
         exit 1
+        
 
     - name: Execute integration tests
       run: dotnet test ${{ env.Integration_Test_Project_Path }}
