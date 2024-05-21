@@ -28,7 +28,7 @@ namespace TechChallenge.Data.Repositories
         {
             var dddLookup = new Dictionary<long, DddComContatosDto>();
 
-            var dddContatos = await _db.QueryAsync<DddDto, ContatoDto, DddComContatosDto>(OBTER_DDD_COM_CONTATOS,
+            await _db.QueryAsync<DddDto, ContatoDto, DddComContatosDto>(OBTER_DDD_COM_CONTATOS,
                 (ddd, contato) =>
                 {
                     if (!dddLookup.TryGetValue(ddd.Id, out var dddlkp))
