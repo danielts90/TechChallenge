@@ -90,7 +90,7 @@ jobs:
 
     - name: Run integration tests with coverlet
       run: |
-        coverlet ./TechChallenge.Tests.Integration\/bin/Debug/net8.0/TechChallenge.Tests.Integration.dll \
+        coverlet ./TechChallenge.Tests.Integration/bin/Debug/net8.0/TechChallenge.Tests.Integration.dll \
             --target "dotnet" \
             --targetargs "test --no-build --verbosity normal" \
             -f opencover \
