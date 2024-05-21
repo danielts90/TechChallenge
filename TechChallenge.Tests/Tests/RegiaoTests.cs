@@ -13,6 +13,19 @@ namespace TechChallenge.Tests.Tests
     {
         private readonly RegiaoFixture _regiaoFixture = regiaoFixture;
 
+        [Fact(DisplayName = "Validar Construtor")]
+        [Trait("Regiao", "Construtor")]
+        public void Constructor_SetRepository()
+        {
+            //Arrange
+            var mockRepo = _regiaoFixture.Mocker.GetMock<IRegiaoRepository>();
+            //Act
+            var service = new RegiaoService(mockRepo.Object);
+            //Assert
+            Assert.NotNull(service);
+        }
+
+
         [Fact(DisplayName = "Validar Região Nome Inválido")]
         [Trait("Regiao", "Validador")]
         public void Regiao_Com_Nome_Vazio_Deve_Retornar_Erro()

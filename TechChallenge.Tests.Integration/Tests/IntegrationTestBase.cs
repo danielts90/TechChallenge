@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Net.Http;
-using System.Text.Json;
-using TechChallenge.Tests.Integration.Fixtures;
+﻿using TechChallenge.Tests.Integration.Fixtures;
 
 namespace TechChallenge.Tests.Integration.Tests
 {
@@ -14,32 +11,20 @@ namespace TechChallenge.Tests.Integration.Tests
             _client = factory.CreateClient();
         }
 
+
         public void Dispose()
         {
-            _client.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        //public async Task<T> GetAsync<T>(string url)
-        //{
-        //    try
-        //    {
-        //        var response = await _client.GetAsync(url);
-        //        response.EnsureSuccessStatusCode();
-        //        string responseBody = await response.Content.ReadAsStringAsync();
-        //        T result = JsonSerializer.Deserialize<T>(responseBody);
-        //        return result;
-        //    }
-        //    catch (HttpRequestException e)
-        //    {
-        //        Console.WriteLine($"Request error: {e.Message}");
-        //        throw;
-        //    }
-        //    catch (JsonException e)
-        //    {
-        //        Console.WriteLine($"Serialization error: {e.Message}");
-        //        throw;
-        //    }
-        //}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && _client is not null)
+            {
+                _client.Dispose();
+            }
+        }
     }
 
 }
