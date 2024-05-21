@@ -6,7 +6,7 @@ namespace TechChallenge.Tests.Integration.Fixtures
 {
     public class DatabaseFixture : IDisposable
     {
-        public IDbConnection? Connection { get; private set; }
+        public IDbConnection Connection { get; private set; }
 
         public DatabaseFixture()
         {
@@ -20,7 +20,9 @@ namespace TechChallenge.Tests.Integration.Fixtures
         private async Task RecreateDatabase()
         {
             var script = File.ReadAllText("Setup/setup.sql");
-            await Connection.ExecuteAsync(script);
+            
+            if(Connection is IDbConnection)
+                await Connection.ExecuteAsync(script);
         }
 
         public void Dispose()
