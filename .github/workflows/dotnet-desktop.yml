@@ -96,23 +96,20 @@ jobs:
             -f opencover \
             -o "coverage.integration.opencover.xml"
 
-    - name: ReportGenerator
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.0
-      with:
-        reports: cobertura.xml
-        targetdir: coveragereport
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
     - name: Merge coverage reports
       run: |
         reportgenerator -reports:coverage.unit.opencover.xml,coverage.integration.opencover.xml -targetdir:coverage -reporttypes:opencover
-    
+
     - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         dotnet tool install --global dotnet-sonarscanner
         export PATH="$PATH:/home/runner/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.coverageReportPaths=coverage/Cobertura.xml
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml"
         dotnet build
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
