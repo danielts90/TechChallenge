@@ -1,48 +1,33 @@
-name: .NET Core Build, Test, and SonarCloud Analysis
-
+name: SonarCloud
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  build-and-test:
-    strategy:
-      matrix:
-        configuration: [Debug]
-
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
-
     env:
-      Solution_Name: TechChallenge.sln
-      Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
-      Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
       POSTGRES_DB: testdb
-
+      
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    
-    - name: Install JDK 17
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: Set up Docker Compose
-      run: |
-        echo "version: '3.8'
-        services:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up Docker Compose
+        run: |
+          echo "version: '3.8'
+          services:
           db:
             image: postgres:latest
             environment:
@@ -50,45 +35,55 @@ jobs:
               POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
               POSTGRES_DB: ${POSTGRES_DB}
             ports:
-              - '5432:5432'" > docker-compose.yml
-    - name: Start database
-      run: docker-compose up -d
+              - '5432:5432'
+      - name: Start database
+        run: docker-compose up -d
 
-    - name: Wait for Postgres
-      run: |
-        echo "Waiting for Postgres to be ready..."
-        for i in {1..30}; do
+      - name: Wait for Postgres
+        run: |
+          echo "Waiting for Postgres to be ready..."
+          for i in {1..30}; do
           if docker exec $(docker-compose ps -q db) pg_isready -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }}; then
             echo "Postgres is ready!"
             exit 0
           fi
           echo "Waiting..."
           sleep 2
-        done
-        echo "Postgres did not become ready in time!"
-        exit 1
-
-    - name: Install SonarCloud scanner
-      run: dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-
-    - name: Install project dependencies
-      run: dotnet restore
+          done
+          echo "Postgres did not become ready in time!"
+          exit 1          
       
-    - name: Test and Analyze
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v3
+        with:
+          path: ./.sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ./.sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+          dotnet tool install --global JetBrains.dotCover.GlobalTool
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l trx
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-    
-    - name: Restore the application
-      run: dotnet restore ${{ env.Solution_Name }}
+        run: |
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
+          dotnet build --no-incremental
+          dotnet dotcover test --dcReportType=HTML
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        
+          run: docker-compose down
 
-    - name: Build the application
-      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} 
 
-    - name: Clean up
-      if: always()
-      run: docker-compose down
+
+
