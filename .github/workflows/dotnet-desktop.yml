@@ -18,7 +18,6 @@ jobs:
       Solution_Name: TechChallenge.sln
       Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
       Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
-      Coverlet_Report_Path: coverage/coverage.info
 
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
@@ -82,13 +81,20 @@ jobs:
         dotnet test ${{ env.Unit_Test_Project_Path }} --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
         dotnet test ${{ env.Integration_Test_Project_Path }} --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
 
+    - name: Install ReportGenerator
+      run: dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.10.6
+
+    - name: Convert coverage report to Cobertura XML
+      run: |
+        ./reportgenerator "-reports:${{ env.Coverlet_Report_Path }}" "-targetdir:coverage" "-reporttypes:Cobertura"
+    
     - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         dotnet tool install --global dotnet-sonarscanner
         export PATH="$PATH:/home/runner/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.coverageReportPaths=${{ env.Coverlet_Report_Path }}
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.coverageReportPaths=coverage/Cobertura.xml
         dotnet build
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
