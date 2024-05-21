@@ -6,7 +6,7 @@ namespace TechChallenge.Tests.Integration.Fixtures
 {
     public class DatabaseFixture : IDisposable
     {
-        public IDbConnection Connection { get; private set; }
+        public IDbConnection? Connection { get; private set; }
 
         public DatabaseFixture()
         {
@@ -25,9 +25,19 @@ namespace TechChallenge.Tests.Integration.Fixtures
 
         public void Dispose()
         {
-            var script = File.ReadAllText("Setup/drop.sql");
-            Connection.Execute(script);
-            Connection.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && Connection is not null)
+            {
+                var dropScript = File.ReadAllText("Setup/drop.sql");
+                Connection.Execute(dropScript);
+                Connection.Dispose();
+                Connection = null;
+            }
         }
     }
 }

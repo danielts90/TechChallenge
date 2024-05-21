@@ -2,7 +2,7 @@
 {
     public class DddComContatosDto
     {
-        public DddDto Ddd { get; set; }
+        public DddDto? Ddd { get; set; }
         public List<ContatoDto> Contatos { get; set; } = new();
     }
 }

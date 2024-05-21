@@ -27,7 +27,7 @@ namespace TechChallenge.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new CustomResponse<string>(false, $"Erro ao consultar os registros do ddd {dddId}, {ex.Message}", null));
+                return BadRequest(new CustomResponse<DddComContatosDto?>(false, $"Erro ao consultar os registros do ddd {dddId}, {ex.Message}", null));
             }
         }
     }

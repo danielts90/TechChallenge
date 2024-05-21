@@ -1,6 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
 using System.Data;
 using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
@@ -51,12 +49,9 @@ namespace TechChallenge.Data.Repositories
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _db is not null)
             {
-                if (_db != null)
-                {
-                    _db.Dispose();
-                }
+                _db.Dispose();
             }
         }
     }
