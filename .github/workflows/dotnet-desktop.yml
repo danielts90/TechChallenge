@@ -18,6 +18,8 @@ jobs:
       Solution_Name: TechChallenge.sln
       Unit_Test_Project_Path: TechChallenge.Tests/TechChallenge.Tests.csproj
       Integration_Test_Project_Path: TechChallenge.Tests.Integration/TechChallenge.Tests.Integration.csproj
+      Coverlet_Report_Path: coverage/coverage.info
+
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
       POSTGRES_DB: testdb
@@ -44,9 +46,6 @@ jobs:
 
     - name: Build the application
       run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
-
-    - name: Execute unit tests
-      run: dotnet test ${{ env.Unit_Test_Project_Path }}
 
     - name: Set up Docker Compose
       run: |
@@ -78,8 +77,10 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
-    - name: Execute integration tests
-      run: dotnet test ${{ env.Integration_Test_Project_Path }}
+    - name: Execute tests with Coverlet
+      run: |
+        dotnet test ${{ env.Unit_Test_Project_Path }} --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
+        dotnet test ${{ env.Integration_Test_Project_Path }} --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
 
     - name: SonarCloud Scan
       env:
@@ -87,7 +88,7 @@ jobs:
       run: |
         dotnet tool install --global dotnet-sonarscanner
         export PATH="$PATH:/home/runner/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.coverageReportPaths=${{ env.Coverlet_Report_Path }}
         dotnet build
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
