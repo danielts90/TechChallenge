@@ -77,16 +77,29 @@ jobs:
         echo "Postgres did not become ready in time!"
         exit 1
 
-    - name: Execute tests with Coverlet
-      run: |
-        dotnet test --configuration ${{ matrix.configuration }} /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=${{ env.Coverlet_Report_Path }}
+    - name: Install coverlet.console
+      run: dotnet tool install --global coverlet.console
 
-    - name: Install ReportGenerator
-      run: dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 5.3.0
-
-    - name: Convert coverage report to Cobertura XML
+    - name: Run unit tests with coverlet
       run: |
-        ./reportgenerator "-reports:${{ env.Coverlet_Report_Path }}" "-targetdir:coverage" "-reporttypes:Cobertura"
+        coverlet ./TechChallenge.Tests/bin/Debug/net8.0/TechChallenge.Tests.dll \
+            --target "dotnet" \
+            --targetargs "test --no-build --verbosity normal" \
+            -f opencover \
+            -o "coverage.unit.opencover.xml"
+
+    - name: Run integration tests with coverlet
+      run: |
+        coverlet ./TechChallenge.Tests.Integration\/bin/Debug/net8.0/TechChallenge.Tests.Integration.dll \
+            --target "dotnet" \
+            --targetargs "test --no-build --verbosity normal" \
+            -f opencover \
+            -o "coverage.integration.opencover.xml"
+
+    - name: Merge coverage reports
+      run: |
+        dotnet tool install --global reportgenerator
+        reportgenerator -reports:coverage.unit.opencover.xml,coverage.integration.opencover.xml -targetdir:coverage -reporttypes:opencover
     
     - name: SonarCloud Scan
       env:
