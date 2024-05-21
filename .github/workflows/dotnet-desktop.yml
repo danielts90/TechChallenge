@@ -45,9 +45,6 @@ jobs:
     - name: Build the application
       run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
 
-    - name: Execute unit tests and collect coverage
-      run: dotnet test ${{ env.Unit_Test_Project_Path }} --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/Coverage/
-
     - name: Set up Docker Compose
       run: |
         echo "version: '3.8'
@@ -76,23 +73,14 @@ jobs:
         done
         echo "Postgres did not become ready in time!"
         exit 1
-    - name: Execute integration tests and collect coverage
-      run: dotnet test ${{ env.Integration_Test_Project_Path }} --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/Coverage/
 
-    - name: Move coverage reports to a single directory
-      run: |
-        mkdir -p coverage-reports
-        find . -type f -name 'coverage.opencover.xml' -exec cp {} coverage-reports/ \;
-
-    - name: SonarCloud Scan
+    - name: Test and analyze
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        dotnet tool install --global dotnet-sonarscanner
-        export PATH="$PATH:/home/runner/.dotnet/tools"
-        dotnet sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx" /d:sonar.coverageReportPaths="coverage-reports/coverage.opencover.xml"
-        dotnet build
-        dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l trx
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
     - name: Clean up
       if: always()
