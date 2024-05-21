@@ -45,6 +45,9 @@ jobs:
     - name: Build the application
       run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
 
+    - name: Execute unit tests
+      run: dotnet test ${{ env.Unit_Test_Project_Path }}
+
     - name: Set up Docker Compose
       run: |
         echo "version: '3.8'
@@ -73,23 +76,18 @@ jobs:
         done
         echo "Postgres did not become ready in time!"
         exit 1
+    - name: Execute integration tests
+      run: dotnet test ${{ env.Integration_Test_Project_Path }}
 
-    - name: Test and analyze
+    - name: SonarCloud Scan
       env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-          dotnet sonarscanner begin /k:"danielts90_TechChallenge"
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-          /d:sonar.cs.opencover.reportsPaths=coverage.xml
-          dotnet build --no-incremental
-          coverlet .\TechChallenge.Tests\bin\Debug\net8.0\TechChallenge.Tests.dll
-          --target "dotnet" 
-          --targetargs "test --no-build"
-          -f=opencover 
-          -o="coverage.xml"
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-      
-
+        dotnet tool install --global dotnet-sonarscanner
+        export PATH="$PATH:/home/runner/.dotnet/tools"
+        dotnet sonarscanner begin /k:"danielts90_TechChallenge"  /o:"danielts90" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet build
+        dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
     - name: Clean up
       if: always()
       run: docker-compose down
