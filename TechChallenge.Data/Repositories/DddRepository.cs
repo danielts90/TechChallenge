@@ -38,7 +38,7 @@ namespace TechChallenge.Data.Repositories
                         dddLookup.Add(ddd.Id, dddlkp);
                     }
 
-                    if (contato is ContatoDto) dddlkp.Contatos.Add(contato);
+                    if (contato is not null) dddlkp.Contatos.Add(contato);
                     return dddlkp;
                 },
                 param: new { dddId },

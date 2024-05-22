@@ -1,14 +1,9 @@
-﻿using Dapper;
-using FluentAssertions.Common;
-using FluentValidation;
+﻿using FluentValidation;
 using Moq;
-using System.Data;
 using TechChallenge.Business.Dtos;
-using TechChallenge.Business.Dtos.Complexos;
 using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
 using TechChallenge.Business.Services;
-using TechChallenge.Data.Repositories;
 
 namespace TechChallenge.Tests.Tests
 {
@@ -75,14 +70,14 @@ namespace TechChallenge.Tests.Tests
 
         [Fact(DisplayName = "Inserir Regiao Inválida")]
         [Trait("Regiao", "Insert")]
-        public void Regiao_Com_Erro_Nao_Deve_Ser_Inserida()
+        public async Task Regiao_Com_Erro_Nao_Deve_Ser_InseridaAsync()
         {
             // Arrange
             var regiaoDto = _regiaoFixture.CreateInvalidDto();
+            
             // Act
-            _regiaoFixture.RegiaoService.Insert(regiaoDto);
-
             // Assert
+            await Assert.ThrowsAsync<ValidationException>(() => _regiaoFixture.RegiaoService.Insert(regiaoDto));
             _regiaoFixture.Mocker.GetMock<IRegiaoRepository>().Verify(repo => repo.Insert((Regiao)regiaoDto), Times.Never());
         }
 
