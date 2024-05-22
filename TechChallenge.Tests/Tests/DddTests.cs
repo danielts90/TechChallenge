@@ -1,4 +1,5 @@
 ﻿using TechChallenge.Business.Dtos;
+using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
 using TechChallenge.Business.Services;
 
@@ -82,6 +83,22 @@ namespace TechChallenge.Tests.Tests
             var result = ddd.Validate();
             //Assert
             Assert.False(result.IsValid);
+        }
+
+        [Fact(DisplayName = "Validar conversão em Entidade")]
+        [Trait("DDD", "Conversão")]
+        public void Ddd_Deve_Retornar_Entidade()
+        {
+            //Arrange
+            var ddd = _dddFixture.CreateValidDto();
+
+            //Act
+            var result = (Ddd)ddd;
+
+            //Assert
+            Assert.Equal(ddd.Id, result.id);
+            Assert.Equal(ddd.Codigo, result.codigo);
+            Assert.Equal(ddd.RegiaoId, result.regiao_id);
         }
     }
 
