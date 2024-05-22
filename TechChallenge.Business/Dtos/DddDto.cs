@@ -18,6 +18,7 @@ namespace TechChallenge.Business.Dtos
         {
             return new Ddd
             {
+                id = Id,
                 codigo = Codigo,
                 regiao_id = RegiaoId
             };

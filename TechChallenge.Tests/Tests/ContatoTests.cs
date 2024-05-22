@@ -1,4 +1,5 @@
 ﻿using TechChallenge.Business.Dtos;
+using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
 using TechChallenge.Business.Services;
 
@@ -85,33 +86,27 @@ namespace TechChallenge.Tests.Tests
             Assert.Equal(mensagemEsperada, result.Errors[0].ErrorMessage);
         }
 
-        [Fact(DisplayName = "Validar Contato com TELEFONE Invalido")]
+        [Theory(DisplayName = "Validar Contato com TELEFONE Invalido")]
         [Trait("Contato", "Validador Telefone")]
-        public void Contato_Com_Telefone_INVALIDO_Deve_Retornar_Erro()
+        [InlineData("12345678910")]
+        [InlineData("1234567")]
+        [InlineData("1234-5678")]
+        [InlineData(null)]
+        public void Contato_Com_Telefone_INVALIDO_Deve_Retornar_Erro(string? telefone)
         {
             // Arrange
-            var contatoDto1 = _contatoFixture.CreateValidDto();
-            var contatoDto2 = _contatoFixture.CreateValidDto();
-            var contatoDto3 = _contatoFixture.CreateValidDto();
+            var contatoDto = _contatoFixture.CreateValidDto();
 
-            contatoDto1.Telefone = "12345678910";
-            contatoDto2.Telefone = "1234567";
-            contatoDto3.Telefone = "1234-5678";
+            contatoDto.Telefone = telefone;
 
             string mensagemEsperada = "O telefone inválido, o número do telefone deve ter 8 ou 9 dígitos.";
 
             // Act
-            var result1 = contatoDto1.Validate();
-            var result2 = contatoDto2.Validate();
-            var result3 = contatoDto3.Validate();
+            var result = contatoDto.Validate();
 
             // Assert           
-            Assert.False(result1.IsValid);
-            Assert.False(result2.IsValid);
-            Assert.False(result3.IsValid);
-            Assert.Equal(mensagemEsperada, result1.Errors[0].ErrorMessage);
-            Assert.Equal(mensagemEsperada, result2.Errors[0].ErrorMessage);
-            Assert.Equal(mensagemEsperada, result3.Errors[0].ErrorMessage);
+            Assert.False(result.IsValid);
+            Assert.NotNull(result.Errors.FirstOrDefault(o => o.ErrorMessage == mensagemEsperada));
         }
 
         [Fact(DisplayName = "Validar Contato com EMAIL Invalido")]
@@ -169,6 +164,23 @@ namespace TechChallenge.Tests.Tests
             // Assert           
             Assert.False(result.IsValid);
             Assert.Equal(mensagemEsperada, result.Errors[0].ErrorMessage);
+        }
+
+        [Fact(DisplayName ="Validar conversão em Entidade")]
+        [Trait("Contato", "Conversão")]
+        public void Contato_Deve_Retornar_Entidade()
+        {
+            //Arrange
+            var contatoDto = _contatoFixture.CreateValidDto();
+
+            //Act
+            var result = (Contato)contatoDto;
+
+            Assert.Equal(contatoDto.Email, result.email);
+            Assert.Equal(contatoDto.Telefone, result.telefone);
+            Assert.Equal(contatoDto.DddId, result.ddd_id);
+            Assert.Equal(contatoDto.Nome, result.nome);
+            Assert.Equal(contatoDto.Id, result.id);
         }
     }
 
