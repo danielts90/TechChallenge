@@ -11,10 +11,12 @@ namespace TechChallenge.Business.Validators
                               .WithMessage("Property cannot be null or empty.");
         }
 
-        public static IRuleBuilderOptions<T, string> IsPhoneNumber<T>(this IRuleBuilder<T, string> ruleBuilder)
+        public static IRuleBuilderOptions<T, string?> IsPhoneNumber<T>(this IRuleBuilder<T, string?> ruleBuilder)
         {
             return ruleBuilder.Must(telefone =>
             {
+                if (telefone == null) return false;
+
                 var regex = RegexHelper.DigitsRegex();
                 return regex.IsMatch(telefone);
             });
