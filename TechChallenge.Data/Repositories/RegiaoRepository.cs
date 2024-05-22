@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 using TechChallenge.Business.Dtos;
 using TechChallenge.Business.Dtos.Complexos;
@@ -37,7 +36,7 @@ namespace TechChallenge.Data.Repositories
                         regiaoLookup.Add(regiao.Id, regiaolkp);
                     }
 
-                    if(ddd is DddDto) regiaolkp.DddsRegiao.Add(ddd);
+                    if(ddd is not null) regiaolkp.DddsRegiao.Add(ddd);
                     return regiaolkp;
                 },
                 param: new {regiaoId},
