@@ -87,6 +87,15 @@ jobs:
           dotnet dotcover test --dcReportType=HTML
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
+      - name: Run tests with coverage
+        run: dotnet test --no-build --collect:"XPlat Code Coverage" 
+
+      - name: Generate coverage report
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport
+
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
