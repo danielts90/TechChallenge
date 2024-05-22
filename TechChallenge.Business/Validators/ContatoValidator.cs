@@ -15,7 +15,7 @@ namespace TechChallenge.Business.Validators
             RuleFor(o => o.Telefone)
                 .NotNullOrEmpty()
                 .WithMessage("O campo telefone é obrigatório")
-                .Must(BePhoneNumber).WithMessage("O telefone inválido, o número do telefone deve ter 8 ou 9 dígitos.");
+                .IsPhoneNumber().WithMessage("O telefone inválido, o número do telefone deve ter 8 ou 9 dígitos.");
 
             RuleFor(o => o.Email)
                 .NotNullOrEmpty()
@@ -25,12 +25,6 @@ namespace TechChallenge.Business.Validators
 
             RuleFor(o => o.DddId)
                 .NotNull().WithMessage("O ddd é obrigatório.");
-        }
-
-        private bool BePhoneNumber(string telefone)
-        {
-            var regex = RegexHelper.DigitsRegex();
-            return regex.IsMatch(telefone);
         }
     }
 }
