@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TechChallenge.Business\TechChallenge.Business.csproj" />
+    <ProjectReference Include="..\TechChallenge.Data\TechChallenge.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

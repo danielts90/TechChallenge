@@ -18,6 +18,7 @@ namespace TechChallenge.Tests.Integration.Tests
         [InlineData("/ddd")]
         [InlineData("/ddd/1")]
         [InlineData("/ddd/ddd-com-contato/1")]
+        [InlineData("/ddd/ddd-com-contato/999")]
         public async Task GetValues_ReturnsSuccessStatusCode(string endpoint)
         {
             var response = await _client.GetAsync(endpoint);

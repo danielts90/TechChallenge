@@ -44,7 +44,11 @@ namespace TechChallenge.Data.Repositories
                 param: new { dddId },
                 splitOn: "Id");
 
-            return dddLookup.Values.FirstOrDefault();
+            return dddLookup.Values.FirstOrDefault() ?? new DddComContatosDto
+            {
+                Ddd = new(),
+                Contatos = new()
+            };
         }
 
         

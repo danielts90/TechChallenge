@@ -1,9 +1,14 @@
-﻿using FluentValidation;
+﻿using Dapper;
+using FluentAssertions.Common;
+using FluentValidation;
 using Moq;
+using System.Data;
 using TechChallenge.Business.Dtos;
+using TechChallenge.Business.Dtos.Complexos;
 using TechChallenge.Business.Entities;
 using TechChallenge.Business.Interfaces;
 using TechChallenge.Business.Services;
+using TechChallenge.Data.Repositories;
 
 namespace TechChallenge.Tests.Tests
 {
@@ -48,7 +53,7 @@ namespace TechChallenge.Tests.Tests
             // Arrange
             var regiaoDto = _regiaoFixture.CreateNewDto();
             string mensagemEsperada = "Região deve ser informada.";
-  
+
             // Act
             var result = regiaoDto.Validate();
             // Assert
@@ -134,7 +139,7 @@ namespace TechChallenge.Tests.Tests
                 .Verify(repo => repo.Update(It.IsAny<Regiao>()), Times.Once);
         }
 
-        [Fact(DisplayName ="Update Regiao Id não encontrado")]
+        [Fact(DisplayName = "Update Regiao Id não encontrado")]
         [Trait("Regiao", "Update")]
         public async Task Alterar_Regiao_Com_Entidade_Nao_Encontrada_Deve_Lancar_Excecao()
         {
@@ -167,7 +172,7 @@ namespace TechChallenge.Tests.Tests
 
             // Act
             var retorno = await _regiaoFixture.RegiaoService.GetById(regiaoDto.Id);
-            
+
             //Assert
             Assert.True(retorno is not null);
         }
@@ -275,6 +280,7 @@ namespace TechChallenge.Tests.Tests
             await Assert.ThrowsAsync<ArgumentException>(async () => await _regiaoFixture.RegiaoService.Delete(regiaoDto.Id));
         }
     }
+
 
     public class RegiaoFixture : FixtureBase<RegiaoDto>
     {

@@ -43,7 +43,11 @@ namespace TechChallenge.Data.Repositories
                 param: new {regiaoId},
                 splitOn: "Id");
 
-            return regiaoLookup.Values.FirstOrDefault();
+            return regiaoLookup.Values.FirstOrDefault() ?? new RegiaoComDddDto
+            {
+                Regiao = new(), 
+                DddsRegiao = new()
+            };
 
         }
     }
