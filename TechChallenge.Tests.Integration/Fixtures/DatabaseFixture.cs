@@ -6,7 +6,7 @@ namespace TechChallenge.Tests.Integration.Fixtures
 {
     public class DatabaseFixture : IDisposable
     {
-        public IDbConnection Connection { get; private set; }
+        public IDbConnection? Connection { get; private set; }
 
         public DatabaseFixture()
         {
