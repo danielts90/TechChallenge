@@ -46,14 +46,16 @@ namespace TechChallenge.Api.Controllers
         [SwaggerResponse(200, "OK")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var item = await _service.GetById(id);
-
-            if (item is not TDto)
+            try
             {
-                return NotFound(new CustomResponse<TDto?>(false, $"No registers founded for id {id}", item));
+                var item = await _service.GetById(id);
+                return Ok(new CustomResponse<TDto?>(true, "", item));
+            }
+            catch (Exception)
+            {
+                return NotFound(new CustomResponse<TDto?>(false, $"No registers founde with id {id}", null));
             }
 
-            return Ok(new CustomResponse<TDto?>(true, "", item));
         }
 
         [HttpPost]
