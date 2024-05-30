@@ -65,7 +65,7 @@ jobs:
           Write-Output "Waiting for Postgres to be ready..."
           for ($i = 1; $i -le 30; $i++) {
               $dbContainer = docker-compose ps -q db
-              $output = docker exec $dbContainer pg_isready -U $env:POSTGRES_USER -d $env:POSTGRES_DB
+              $output = Invoke-Expression "docker exec $dbContainer pg_isready -U $env:POSTGRES_USER -d $env:POSTGRES_DB"
               if ($output -match "accepting connections") {
                   Write-Output "Postgres is ready!"
                   exit 0
@@ -104,23 +104,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet tool install --global JetBrains.dotCover.GlobalTool
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
-          dotnet build --no-incremental
-          dotnet dotcover test --dcReportType=HTML
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-      - name: Run tests with coverage
-        run: dotnet test --no-build --collect:"XPlat Code Coverage"
-
-      - name: Generate coverage report
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Shutdown database
-        run: docker-compose down
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"danielts90_TechChallenge" /o:"danielts90" /d:sonar.token="${{ secrets.SONAR_TOKE
