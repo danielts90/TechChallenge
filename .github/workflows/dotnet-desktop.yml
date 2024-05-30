@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-          
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -45,12 +45,35 @@ jobs:
 
       - name: Wait for Postgres on Linux
         if: runner.os == 'Linux'
-        run: ./wait_for_postgres.sh
+        run: |
+          echo "Waiting for Postgres to be ready..."
+          for i in {1..30}; do
+            if docker exec $(docker-compose ps -q db) pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; then
+              echo "Postgres is ready!"
+              exit 0
+            fi
+            echo "Waiting..."
+            sleep 2
+          done
+          echo "Postgres did not become ready in time!"
+          exit 1
         shell: bash
 
       - name: Wait for Postgres on Windows
         if: runner.os == 'Windows'
-        run: ./wait_for_postgres.ps1
+        run: |
+          Write-Output "Waiting for Postgres to be ready..."
+          for ($i = 1; $i -le 30; $i++) {
+              $output = docker exec $(docker-compose ps -q db) pg_isready -U $env:POSTGRES_USER -d $env:POSTGRES_DB
+              if ($output -match "accepting connections") {
+                  Write-Output "Postgres is ready!"
+                  exit 0
+              }
+              Write-Output "Waiting..."
+              Start-Sleep -Seconds 2
+          }
+          Write-Output "Postgres did not become ready in time!"
+          exit 1
         shell: pwsh
 
       - name: Cache SonarCloud packages
