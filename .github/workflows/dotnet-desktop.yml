@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and analyze
-    runs-on: ubuntu-latest
+    runs-on: self-hosted    
     env:
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: 102030
