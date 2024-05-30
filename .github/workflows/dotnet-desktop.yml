@@ -1,4 +1,5 @@
 name: SonarCloud
+
 on:
   push:
     branches:
@@ -20,10 +21,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
+          distribution: 'zulu'
+          
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
 
       - name: Set up Docker Compose
         run: |
@@ -37,23 +39,19 @@ jobs:
                 POSTGRES_DB: ${POSTGRES_DB}
               ports:
                 - '5432:5432'" > docker-compose.yml
-
+                
       - name: Start database
         run: docker-compose up -d
 
-      - name: Wait for Postgres
-        run: |
-          echo "Waiting for Postgres to be ready..."
-          for i in {1..30}; do
-            if docker exec $(docker-compose ps -q db) pg_isready -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }}; then
-              echo "Postgres is ready!"
-              exit 0
-            fi
-            echo "Waiting..."
-            sleep 2
-          done
-          echo "Postgres did not become ready in time!"
-          exit 1
+      - name: Wait for Postgres on Linux
+        if: runner.os == 'Linux'
+        run: ./wait_for_postgres.sh
+        shell: bash
+
+      - name: Wait for Postgres on Windows
+        if: runner.os == 'Windows'
+        run: ./wait_for_postgres.ps1
+        shell: pwsh
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -78,7 +76,7 @@ jobs:
 
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet tool install --global JetBrains.dotCover.GlobalTool
@@ -88,13 +86,12 @@ jobs:
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Run tests with coverage
-        run: dotnet test --no-build --collect:"XPlat Code Coverage" 
+        run: dotnet test --no-build --collect:"XPlat Code Coverage"
 
       - name: Generate coverage report
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport
-
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
