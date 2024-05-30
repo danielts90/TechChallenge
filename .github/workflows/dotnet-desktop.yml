@@ -64,7 +64,8 @@ jobs:
         run: |
           Write-Output "Waiting for Postgres to be ready..."
           for ($i = 1; $i -le 30; $i++) {
-              $output = docker exec $(docker-compose ps -q db) pg_isready -U $env:POSTGRES_USER -d $env:POSTGRES_DB
+              $dbContainer = docker-compose ps -q db
+              $output = docker exec $dbContainer pg_isready -U $env:POSTGRES_USER -d $env:POSTGRES_DB
               if ($output -match "accepting connections") {
                   Write-Output "Postgres is ready!"
                   exit 0
