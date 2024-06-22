@@ -15,11 +15,11 @@ COPY ["TechChallenge.Data/TechChallenge.Data.csproj", "TechChallenge.Data/"]
 RUN dotnet restore "./TechChallenge.Api/TechChallenge.Api.csproj"
 COPY . .
 WORKDIR "/src/TechChallenge.Api"
-RUN dotnet build "./TechChallenge.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./TechChallenge.Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TechChallenge.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./TechChallenge.Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
