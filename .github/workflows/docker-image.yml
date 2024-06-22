@@ -31,7 +31,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
    
     - name: Build the Docker image
-      working-directory: path
+      working-directory: TechChallenge/TechChallenge.Api
       run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest
     
     - name: Push Docker image to Docker Hub
