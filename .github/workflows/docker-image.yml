@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v3
@@ -29,9 +29,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-    - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest .
-
+   
+    - name: Build the Docker image
+      working-directory: path
+      run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest
+    
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest
