@@ -20,8 +20,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x' 
-
+    
     - name: Build .NET Core application
+      working-directory: TechChallenge/TechChallenge.Api
       run: dotnet build --configuration Release
 
     - name: Log in to Docker Hub
@@ -29,10 +30,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-   
+
     - name: Build the Docker image
       working-directory: TechChallenge/TechChallenge.Api
       run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest
-    
+
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fiap_activity:latest
