@@ -53,7 +53,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapMetrics();
+app.MapMetrics(settings => settings.EnableOpenMetrics = false);
 
 app.Run();
 
