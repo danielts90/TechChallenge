@@ -12,17 +12,15 @@ services:
       - techchallenge_api_network
 
   prometheus:
-    build:
-      context: ./prometheus
-      dockerfile: Dockerfile
-    image: prometheus-local
+    image: prom/prometheus
     restart: always
     ports: 
       - 9090:9090
     networks:
       - techchallenge_api_network
     volumes: 
-      - './prometheus/data:/data'
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
 
   db:
     image: postgres:latest
@@ -35,7 +33,20 @@ services:
     networks:
       - techchallenge_api_network
 
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks: 
+      - techchallenge_api_network
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 networks:
   techchallenge_api_network:
-    driver: overlay
-    attachable: true
+    driver: bridge  # Use 'bridge' if you are not using Swarm
+
+volumes:
+  prometheus_data:
+  grafana_data:
