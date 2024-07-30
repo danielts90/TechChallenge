@@ -2,12 +2,10 @@ version: '3.8'
 
 services:
   api:
-    build:
-      context: .
-      dockerfile: src/TechChallenge.Api/Dockerfile
-    image: techchallenge.api
+    image: danielts90/techchallenge-api:latest
+    container_name: techchallenge-api-container
     ports:
-      - 8888:8080
+      - "8888:8080"
     networks:
       - techchallenge_api_network
 
@@ -32,6 +30,9 @@ services:
       - "5432:5432"
     networks:
       - techchallenge_api_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+ 
 
   grafana:
     image: grafana/grafana
@@ -45,8 +46,9 @@ services:
 
 networks:
   techchallenge_api_network:
-    driver: bridge  # Use 'bridge' if you are not using Swarm
+    driver: bridge
 
 volumes:
   prometheus_data:
   grafana_data:
+  postgres_data:
