@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  api:
+    image: danielts90/techchallenge-api:latest
+    container_name: techchallenge-api-container
+    ports:
+      - "8888:8080"
+    networks:
+      - techchallenge_api_network
+
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    ports: 
+      - 9090:9090
+    networks:
+      - techchallenge_api_network
+    volumes: 
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+
   db:
     image: postgres:latest
     environment:
@@ -9,3 +28,27 @@ services:
       POSTGRES_DB: testdb
     ports:
       - "5432:5432"
+    networks:
+      - techchallenge_api_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+ 
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks: 
+      - techchallenge_api_network
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+networks:
+  techchallenge_api_network:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  postgres_data:
