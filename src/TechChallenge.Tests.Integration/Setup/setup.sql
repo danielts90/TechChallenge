@@ -38,6 +38,7 @@ INSERT INTO ddd (codigo, regiao_id, created_at) VALUES ('44', 1, CURRENT_DATE) O
 
 INSERT INTO contato (nome, email, telefone, ddd_id, created_at) VALUES ('Eddie Vedder', 'eddie.vedder@pearljam.com', '123456789', 1, CURRENT_DATE) ON CONFLICT DO NOTHING;
 INSERT INTO contato (nome, email, telefone, ddd_id, created_at) VALUES ('Eloy Casagrande', 'eloy.bighouse@slipknot.com', '123456789', 2, CURRENT_DATE) ON CONFLICT DO NOTHING;
+INSERT INTO contato (nome, email, telefone, ddd_id, created_at) VALUES ('Contato para Delete', 'delete@contato.com', '123456789', 2, CURRENT_DATE) ON CONFLICT DO NOTHING;
 
 
 

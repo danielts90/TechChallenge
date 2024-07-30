@@ -47,7 +47,7 @@ namespace TechChallenge.Tests.Integration.Tests
         }
 
         [Fact(DisplayName = "Regiao Put")]
-        [Trait("Regiao Integration", "Update")]
+        [Trait("Regiao Integration", "Put")]
         public async Task Put_ReturnsSuccessStatusCode()
         {
             //Arrange
@@ -61,6 +61,23 @@ namespace TechChallenge.Tests.Integration.Tests
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "Regiao Put Fail")]
+        [Trait("Regiao Integration", "Put")]
+        public async Task Put_ReturnsBaddRequestStatusCode()
+        {
+            //Arrange
+            RegiaoDto regiao = new() { Id = 1, Nome = "Regiao de Testes" };
+            var json = JsonSerializer.Serialize(regiao);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+
+            //Act
+            var response = await _client.PutAsync($"/Regiao/2", content);
+
+            //Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact(DisplayName = "Regiao Delete")]
