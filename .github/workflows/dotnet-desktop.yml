@@ -39,7 +39,7 @@ jobs:
                 - '5432:5432'" > docker-compose.yml
 
       - name: Start database
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for Postgres
         run: |
@@ -102,4 +102,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Shutdown database
-        run: docker-compose down
+        run: docker compose down
